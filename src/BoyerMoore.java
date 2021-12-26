@@ -45,10 +45,46 @@ public class BoyerMoore {
             throw new IllegalArgumentException("Your comparator cannot be null. Please try again with a "
                     + " non-null comparator parameter.");
         }
+
         ArrayList<Integer> matches = new ArrayList<>();
+
         if (pattern.length() > text.length()) {
             return matches;
         }
+
+        int n = text.length();
+        int m = pattern.length();
+
+        HashMap<Character, Integer> lot = (HashMap<Character, Integer>) buildLastTable(pattern);
+
+        int[] f = new int[m + 1];
+        int[] shift = new int[m + 1];
+
+        for (int i = 0; i < m + 1; i++) {
+            shift[i] = 0;
+        }
+
+        preprocess_strong_suffix(shift, f, pattern, m, comparator);
+        preprocess_case2(shift, f, pattern, m);
+
+        int s = 0, j;
+
+        while (s <= n - m) {
+            j = m - 1;
+
+            while (j >= 0 && comparator.compare(pattern.charAt(j), text.charAt(s + j)) == 0) {
+                j--;
+            }
+
+            if (j < 0) {
+                matches.add(s);
+                s++;
+            } else {
+                int lotShift = lot.getOrDefault(text.charAt(s + j), -1);
+                s += Math.max(shift[j + 1], j - lotShift);
+            }
+        }
+
         return matches;
     }
 
@@ -115,6 +151,38 @@ public class BoyerMoore {
             i++;
         }
         return lot;
+    }
+
+
+    public static void preprocess_strong_suffix(int[] shift, int[] f, CharSequence pattern, int m,
+                                                CharacterComparator comparator) {
+        int i = m, j = m + 1;
+        f[i] = j;
+
+        while (i > 0) {
+            while (j <= m && comparator.compare(pattern.charAt(i - 1), pattern.charAt(j - 1)) != 0) {
+                if (shift[j] == 0) {
+                    shift[j] = j - i;
+                }
+
+                j = f[j];
+            }
+            i--; j--;
+            f[i] = j;
+        }
+    }
+
+    public static void preprocess_case2(int[] shift, int[] f, CharSequence pattern, int m) {
+        int i, j;
+        j = f[0];
+        for (i = 0; i <= m; i++) {
+            if (shift[i] == 0) {
+                shift[i] = j;
+            }
+            if (i == j) {
+                j = f[j];
+            }
+        }
     }
 
 }
