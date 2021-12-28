@@ -51,15 +51,15 @@ class PeriodicityWork {
 		int p3 = m3 - buildFailureTable(pattern3, comparator)[m3 - 1];
 		System.out.println("P3k = " +  p3);
 
-		CharSequence pattern3 = "abcabca";
-		int m3 = pattern3.length();
-		int p3 = m3 - buildFailureTable(pattern3, comparator)[m3 - 1];
-		System.out.println("P3k = " +  p3);
+		CharSequence pattern4 = "abcabca";
+		int m4 = pattern4.length();
+		int p4 = m4 - buildFailureTable(pattern4, comparator)[m4 - 1];
+		System.out.println("P4k = " +  p4);
 
-		CharSequence pattern3 = "abcabca";
-		int m3 = pattern3.length();
-		int p3 = m3 - buildFailureTable(pattern3, comparator)[m3 - 1];
-		System.out.println("P3k = " +  p3);
+		CharSequence pattern5 = "abcabca";
+		int m5 = pattern5.length();
+		int p5 = m5 - buildFailureTable(pattern5, comparator)[m5 - 1];
+		System.out.println("P5k = " +  p5);
 
 	}
 }
