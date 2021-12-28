@@ -206,6 +206,9 @@ public class BoyerMoore {
                 matches.add(s);
                 s++; // change to using good suffix heuristic shift[0], I believe.
             } else {
+                if (l != 0) {
+                    l = 0;
+                }
                 int lotShift = lot.getOrDefault(text.charAt(s + j), -1);
                 // We will shift the text according to the maximum of the good suffix and bad character heuristics.
                 s += Math.max(shift[j + 1], j - lotShift);
