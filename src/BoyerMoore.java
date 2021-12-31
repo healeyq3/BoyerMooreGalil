@@ -8,7 +8,7 @@ import java.util.HashMap;
  * as well as the BM algorithm with the Galil Rule implemented as well.
  *
  * @author Quill Healey
- * @version 1.0
+ * @version 2.0
  *
  * Collaborators:
  * GeeksForGeeks article: https://www.geeksforgeeks.org/boyer-moore-algorithm-for-pattern-searching/
@@ -67,7 +67,7 @@ public class BoyerMoore {
         i - 1.
         Note that both array are set to the length of the pattern + 1 so that if there is a mismatch at index m our
         call shift[m + 1] will not throw an IndexOutOfBoundsException.
-        * See the preprocessing methods below for more details.
+        See the preprocessing methods below for more details.
          */
         int[] f = new int[m + 1];
         int[] shift = new int[m + 1];
@@ -172,7 +172,7 @@ public class BoyerMoore {
         preprocessStrongSuffix(shift, f, pattern, comparator);
         preprocessCase2(shift, f, pattern);
 
-        // periodicity of the pattern
+        // k is the periodicity of the pattern. A check will be implemented below to ensure that k is valid.
         int k = m - buildFailureTable(pattern, comparator)[m - 1];
 
         // s is the shift of the pattern
@@ -195,19 +195,23 @@ public class BoyerMoore {
             }
 
             /*
-            If j < 0 then we have found a match. If k > 1 and m % (m - ftable[m-1]) == 0 (see proof in GitHub) then we
+            If j < l then we have found a match. If k > 1 and m % (m - ftable[m-1]) == 0 then we
             can exploit the periodicity of the pattern by shifting k units forward and only checking the
             last k elements to determine if there is another occurrence.
              */
             if (j < l && k > 1 && m % k == 0) {
                 matches.add(s);
                 l = m - k;
-                s = s + k;
+                s += k;
             } else if (j < 0) {
+                // if the pattern does not have a period we revert to the usual BM shifting scheme.
                 matches.add(s);
-                s++; // change to using good suffix heuristic shift[0], I believe.
+                s += shift[0];
             } else {
                 if (l != 0) {
+                    /* if we run into a mismatch after previously exploiting the Galil rule, we must return to checking
+                    all the text and pattern comparisons.
+                     */
                     l = 0;
                 }
                 int lotShift = lot.getOrDefault(text.charAt(s + j), -1);
@@ -215,7 +219,6 @@ public class BoyerMoore {
                 s += Math.max(shift[j + 1], j - lotShift);
             }
         }
-
         return matches;
     }
 
@@ -319,13 +322,33 @@ public class BoyerMoore {
         }
     }
 
+    /**
+     * The preprocessCase2 helper method is run on the shift and f (border) arrays after we call the
+     * preprocessStrongSuffix method. This algorithm uses the previously computed borders to account for the case when
+     * there is a prefix of P that matches with a suffix of the suffix t (above). In other words, there is
+     * no guarantee that for the suffix t there will be a match for t earlier in the pattern. However, there is still
+     * a chance that some prefix of P will match with some suffix of t.
+     *
+     * @param shift    The same shift array used in the strong good suffix preprocessing.
+     * @param f    The same border array used in the strong good suffix preprocessing.
+     * @param pattern    a pattern that we are preprocessing a shift table for (same as above).
+     */
     public static void preprocessCase2(int[] shift, int[] f, CharSequence pattern) {
         int m = pattern.length();
+        // f[0] is the widest-border from the starting position
         int j = f[0];
+
         for (int i = 0; i <= m; i++) {
+            /*
+            For all free entries in the shift array we replace them with the distance of the widest border.
+             */
             if (shift[i] == 0) {
                 shift[i] = j;
             }
+            /*
+            When the suffix of the pattern becomes shorter than f[0] the algorithm uses the next widest border in the
+            shift array.
+             */
             if (i == j) {
                 j = f[j];
             }
@@ -338,7 +361,7 @@ public class BoyerMoore {
      * The table built should be the length of the input pattern.
      *
      * Note that a given index i will contain the length of the largest prefix
-     * of the pattern indices [0..i] that is also a suffix of the pattern
+     * of the pattern indices [0..i] that is also a proper suffix of the pattern
      * indices [1..i]. This means that index 0 of the returned table will always
      * be equal to 0
      *
@@ -354,7 +377,7 @@ public class BoyerMoore {
      * If the pattern is empty, return an empty array.
      *
      * @param pattern    a pattern you're building a failure table for
-     * @param comparator you MUST use this to check if characters are equal
+     * @param comparator used to check if two characters are equal
      * @return integer array holding your failure table
      * @throws java.lang.IllegalArgumentException if the pattern or comparator
      *                                            is null
@@ -375,7 +398,6 @@ public class BoyerMoore {
 
         int m = pattern.length();
 
-        // The failure table's size == the pattern's length
         int[] ftable = new int[m];
         ftable[0] = 0;
 
@@ -399,6 +421,11 @@ public class BoyerMoore {
         return ftable;
     }
 
+    /**
+     * A private helper I created for debugging.
+     *
+     * @param arr An array whose elements you want to print out.
+     */
     private static void printArr(ArrayList<Integer> arr) {
         for (int a : arr) {
             System.out.print(a + ", ");
