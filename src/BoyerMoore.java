@@ -195,10 +195,11 @@ public class BoyerMoore {
             }
 
             /*
-            If j < 0 then we have found a match. If k >= 2 then we can exploit the periodicity of the pattern by
-            shifting k units forward and only checking the last k elements to determine if there is another occurrence.
+            If j < 0 then we have found a match. If k > 1 and m % (m - ftable[m-1]) == 0 (see proof in GitHub) then we
+            can exploit the periodicity of the pattern by shifting k units forward and only checking the
+            last k elements to determine if there is another occurrence.
              */
-            if (j < l && k >= 2) {
+            if (j < l && k > 1 && m % k == 0) {
                 matches.add(s);
                 l = m - k;
                 s = s + k;
@@ -220,7 +221,8 @@ public class BoyerMoore {
 
     /**
      * Builds a last occurrence table, as specified by the bad character rule, that will be used to run both the BM
-     * and BM-Galil algorithms.
+     * and BM-Galil algorithms. Note that the dictionary's size will be equivalent to the size of the pattern's
+     * alphabet.
      *
      * If the pattern is empty an empty map will be returned.
      *
@@ -370,13 +372,19 @@ public class BoyerMoore {
             throw new IllegalArgumentException("Your comparator cannot be a null value. Please pass in a valid"
                     + " comparator");
         }
+
         int m = pattern.length();
+
+        // The failure table's size == the pattern's length
         int[] ftable = new int[m];
         ftable[0] = 0;
+
         int i = 0;
         int j = 1;
+
         while (j < pattern.length()) {
             int comparison = comparator.compare(pattern.charAt(i), pattern.charAt(j));
+            // If the two characters are equal
             if (comparison == 0) {
                 ftable[j] = i + 1;
                 i++;

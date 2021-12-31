@@ -343,4 +343,15 @@ public class BoyerMooreTests {
 
     }
 
+    // was just using this and changing the pattern to build failure tables that could break the implementation
+    @Test(timeout = TIMEOUT)
+    public void weirdPeriodicityTest() {
+        CharSequence pattern = "abcabcabcab";
+        int[] ftable = BoyerMoore.buildFailureTable(pattern, comparator);
+        for (int a : ftable) {
+            System.out.print(a + ", ");
+        }
+        System.out.println();
+    }
+
 }
