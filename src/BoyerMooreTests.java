@@ -320,29 +320,6 @@ public class BoyerMooreTests {
         assertEquals(0, comparator.getComparisonCount());
     }
 
-    @Test (timeout = TIMEOUT)
-    public void firstGalilTest() {
-        /*
-            text: abababaaabababa
-            pattern: ababa
-            pattern periodicity: 2
-
-         */
-        CharSequence text = "abababaaabababa";
-        CharSequence pattern = "ababa";
-        // Testing periodicity
-        assertEquals(2, pattern.length() - BoyerMoore.buildFailureTable(pattern, comparator)[pattern.length()-1]);
-        ArrayList<Integer> answer = (ArrayList<Integer>) BoyerMoore.boyerMooreGalil(pattern, text, comparator);
-        System.out.println("Answer size: " + answer.size());
-        for (int a : answer) {
-            System.out.print(a + ", ");
-        }
-        System.out.println();
-        // This correctly outputted: 0, 2, 8, 10
-        // Will add more proper tests and work on completing commenting/explanations/cleaning tomorrow (12/28)
-
-    }
-
     // was just using this and changing the pattern to build failure tables that could break the implementation
     @Test(timeout = TIMEOUT)
     public void weirdPeriodicityTest() {
@@ -352,6 +329,21 @@ public class BoyerMooreTests {
             System.out.print(a + ", ");
         }
         System.out.println();
+    }
+
+    @Test(timeout = TIMEOUT)
+    public void firstGalilTest() {
+        /*
+            text: abababaaabababa
+            pattern: ababa
+            pattern periodicity: 2
+         */
+        CharSequence text = "abababaaabababa";
+        CharSequence pattern = "ababa";
+        int k = pattern.length() - BoyerMoore.buildFailureTable(pattern, comparator)[pattern.length()-1];
+        // Testing periodicity
+        assertEquals(2, k);
+        ArrayList<Integer> matches = (ArrayList<Integer>) BoyerMoore.boyerMooreGalil(pattern, text, comparator);
     }
 
 }

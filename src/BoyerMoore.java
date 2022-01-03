@@ -184,7 +184,9 @@ public class BoyerMoore {
         initialize l to zero here, its value could change later according to the Galil Rule.
          */
         int l = 0;
-
+        int g = m % k; // DEBUG
+        System.out.println("before: " + comparator.getComparisonCount());
+        System.out.println("Galil test:" + m + ";" + k + "; " + g);
         while (s <= n - m) {
             // once again recall that BM checks from right to left.
             j = m - 1;
@@ -202,6 +204,7 @@ public class BoyerMoore {
             if (j < l && k > 1 && m % k == 0) {
                 matches.add(s);
                 l = m - k;
+                System.out.println("In Galil. l = " + l);
                 s += k;
             } else if (j < 0) {
                 // if the pattern does not have a period we revert to the usual BM shifting scheme.
@@ -214,11 +217,21 @@ public class BoyerMoore {
                      */
                     l = 0;
                 }
-                int lotShift = lot.getOrDefault(text.charAt(s + j), -1);
+                int lotShift = j - lot.getOrDefault(text.charAt(s + j), -1);
                 // We will shift the text according to the maximum of the good suffix and bad character heuristics.
-                s += Math.max(shift[j + 1], j - lotShift);
+                if (shift[j+1] > lotShift) {
+                    System.out.println("Good Suffix won. Shifting by " + shift[j+1]);
+                    System.out.println("j: " + j + "s before: " + s);
+                }
+                else {
+                    System.out.println("Bad Character won. Shifting by " + lotShift);
+                    System.out.println("j: " + j + "s before: " + s);
+                }
+                s += Math.max(shift[j + 1], lotShift);
             }
+            System.out.println("Comparisons before s: " + s + "; " + comparator.getComparisonCount());
         }
+        System.out.println("after: " + comparator.getComparisonCount());
         return matches;
     }
 
@@ -332,9 +345,30 @@ public class BoyerMoore {
      * @param shift    The same shift array used in the strong good suffix preprocessing.
      * @param f    The same border array used in the strong good suffix preprocessing.
      * @param pattern    a pattern that we are preprocessing a shift table for (same as above).
+     * @throws IllegalArgumentException    if the pattern is null valued
      */
     public static void preprocessCase2(int[] shift, int[] f, CharSequence pattern) {
+        if (pattern == null) {
+            throw new IllegalArgumentException("Your pattern cannot be a null value. Please pass in a valid pattern"
+                    + " parameter argument.");
+        }
+        if (shift == null) {
+            throw new IllegalArgumentException("Your shift array cannot be a null value. Please pass in a valid"
+                    + " shift array parameter argument.");
+        }
+        if (f == null) {
+            throw new IllegalArgumentException("Your border array cannot be a null value. Please pass in a valid"
+                    + " border array parameter argument.");
+        }
         int m = pattern.length();
+        if (shift.length != m + 1) {
+            throw new IllegalArgumentException("Your shift array has to be equal to the length of the pattern + 1."
+                    + " Please pass in an appropriately sized shift array.");
+        }
+        if (f.length != m + 1) {
+            throw new IllegalArgumentException("Your border array has to be equal to the length of the pattern + 1."
+                    + " Please pass in an appropriately sized border array.");
+        }
         // f[0] is the widest-border from the starting position
         int j = f[0];
 
@@ -421,15 +455,4 @@ public class BoyerMoore {
         return ftable;
     }
 
-    /**
-     * A private helper I created for debugging.
-     *
-     * @param arr An array whose elements you want to print out.
-     */
-    private static void printArr(ArrayList<Integer> arr) {
-        for (int a : arr) {
-            System.out.print(a + ", ");
-        }
-        System.out.println();
-    }
 }
