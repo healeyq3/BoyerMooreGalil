@@ -195,11 +195,11 @@ public class BoyerMoore {
             }
 
             /*
-            If j < l then we have found a match. If k > 1 and m % (m - ftable[m-1]) == 0
+            If j < l then we have found a match. If k > 1 and m % (m - ftable[m-1]) == 0 (REMOVED THIS)
             then we can exploit the periodicity of the pattern by shifting k units forward
             and only checking the last k elements to determine if there is another occurrence.
              */
-            if (j < l && k > 1 && m % k == 0) {
+            if (j < l && k > 1) {
                 matches.add(s);
                 l = m - k;
                 s += k;
