@@ -172,7 +172,7 @@ public class BoyerMoore {
         preprocessStrongSuffix(shift, f, pattern, comparator);
         preprocessCase2(shift, f, pattern);
 
-        // k is the periodicity of the pattern. A check will be implemented below to ensure that k is valid.
+        // k is the "periodicity" of the pattern. A check will be implemented below to ensure that k is valid (LATER).
         int k = m - buildFailureTable(pattern, comparator)[m - 1];
 
         // s is the shift of the pattern
@@ -184,9 +184,6 @@ public class BoyerMoore {
         initialize l to zero here, its value could change later according to the Galil Rule.
          */
         int l = 0;
-        int g = m % k; // DEBUG
-        System.out.println("before: " + comparator.getComparisonCount());
-        System.out.println("Galil test:" + m + ";" + k + "; " + g);
         while (s <= n - m) {
             // once again recall that BM checks from right to left.
             j = m - 1;
@@ -197,14 +194,13 @@ public class BoyerMoore {
             }
 
             /*
-            If j < l then we have found a match. If k > 1 and m % (m - ftable[m-1]) == 0 then we
-            can exploit the periodicity of the pattern by shifting k units forward and only checking the
-            last k elements to determine if there is another occurrence.
+            If j < l then we have found a match. If k > 1 and m % (m - ftable[m-1]) == 0 (THIS PERIODICITY CHECK HAS
+            TEMPORARILY BEEN DELETED) then we can exploit the periodicity of the pattern by shifting k units forward
+            and only checking the last k elements to determine if there is another occurrence.
              */
-            if (j < l && k > 1 && m % k == 0) {
+            if (j < l && k > 1) {
                 matches.add(s);
                 l = m - k;
-                System.out.println("In Galil. l = " + l);
                 s += k;
             } else if (j < 0) {
                 // if the pattern does not have a period we revert to the usual BM shifting scheme.
@@ -219,19 +215,9 @@ public class BoyerMoore {
                 }
                 int lotShift = j - lot.getOrDefault(text.charAt(s + j), -1);
                 // We will shift the text according to the maximum of the good suffix and bad character heuristics.
-                if (shift[j+1] > lotShift) {
-                    System.out.println("Good Suffix won. Shifting by " + shift[j+1]);
-                    System.out.println("j: " + j + "s before: " + s);
-                }
-                else {
-                    System.out.println("Bad Character won. Shifting by " + lotShift);
-                    System.out.println("j: " + j + "s before: " + s);
-                }
                 s += Math.max(shift[j + 1], lotShift);
             }
-            System.out.println("Comparisons before s: " + s + "; " + comparator.getComparisonCount());
         }
-        System.out.println("after: " + comparator.getComparisonCount());
         return matches;
     }
 

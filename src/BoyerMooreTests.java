@@ -344,6 +344,12 @@ public class BoyerMooreTests {
         // Testing periodicity
         assertEquals(2, k);
         ArrayList<Integer> matches = (ArrayList<Integer>) BoyerMoore.boyerMooreGalil(pattern, text, comparator);
+        ArrayList<Integer> correct = new ArrayList<>();
+        correct.add(0);
+        correct.add(2);
+        correct.add(8);
+        correct.add(10);
+        assertEquals(correct, matches);
     }
 
 }
