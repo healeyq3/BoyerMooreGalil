@@ -200,7 +200,8 @@ public class BoyerMoore {
              */
             if (j < l && k > 1) {
                 matches.add(s);
-                l = m - k;
+//                l = m - k;
+                l = k;
                 s += k;
             } else if (j < 0) {
                 // if the pattern does not have a period we revert to the usual BM shifting scheme.
