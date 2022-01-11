@@ -172,7 +172,8 @@ public class BoyerMoore {
         preprocessStrongSuffix(shift, f, pattern, comparator);
         preprocessCase2(shift, f, pattern);
 
-        // k is the "periodicity" of the pattern. A check will be implemented below to ensure that k is valid (LATER).
+        // k is the "periodicity" of the pattern. A check will be implemented below to ensure that k is valid
+        // (Only for p = u^k case).
         int k = m - buildFailureTable(pattern, comparator)[m - 1];
 
         // s is the shift of the pattern
@@ -194,14 +195,13 @@ public class BoyerMoore {
             }
 
             /*
-            If j < l then we have found a match. If k > 1 and m % (m - ftable[m-1]) == 0 (THIS PERIODICITY CHECK HAS
-            TEMPORARILY BEEN DELETED) then we can exploit the periodicity of the pattern by shifting k units forward
+            If j < l then we have found a match. If k > 1 and m % (m - ftable[m-1]) == 0
+            then we can exploit the periodicity of the pattern by shifting k units forward
             and only checking the last k elements to determine if there is another occurrence.
              */
-            if (j < l && k > 1) {
+            if (j < l && k > 1 && m % k == 0) {
                 matches.add(s);
-//                l = m - k;
-                l = k;
+                l = m - k;
                 s += k;
             } else if (j < 0) {
                 // if the pattern does not have a period we revert to the usual BM shifting scheme.
