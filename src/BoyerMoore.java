@@ -76,7 +76,9 @@ public class BoyerMoore {
             shift[i] = 0;
         }
 
-        preprocessStrongSuffix(shift, f, pattern, comparator);
+        // This comparator is not needed. Simply used to make current testing easier.
+        CharacterComparator newComparator = new CharacterComparator();
+        preprocessStrongSuffix(shift, f, pattern, newComparator);
         preprocessCase2(shift, f, pattern);
 
         // s is the shift of the pattern
@@ -96,7 +98,7 @@ public class BoyerMoore {
             // If j < 0 then we have found a match
             if (j < 0) {
                 matches.add(s);
-                s++;
+                s += shift[0];
             } else {
                 int lotShift = lot.getOrDefault(text.charAt(s + j), -1);
                 // We will shift the text according to the maximum of the good suffix and bad character heuristics.
@@ -168,13 +170,14 @@ public class BoyerMoore {
         for (int i = 0; i < m + 1; i++) {
             shift[i] = 0;
         }
-
-        preprocessStrongSuffix(shift, f, pattern, comparator);
+        // This comparator is not needed. Simply used to make current testing easier.
+        CharacterComparator newComparator = new CharacterComparator();
+        preprocessStrongSuffix(shift, f, pattern, newComparator);
         preprocessCase2(shift, f, pattern);
 
         // k is the "periodicity" of the pattern. A check will be implemented below to ensure that k is valid
         // (Only for p = u^k case).
-        int k = m - buildFailureTable(pattern, comparator)[m - 1];
+        int k = m - buildFailureTable(pattern, newComparator)[m - 1];
 
         // s is the shift of the pattern
         int s = 0;
@@ -185,6 +188,7 @@ public class BoyerMoore {
         initialize l to zero here, its value could change later according to the Galil Rule.
          */
         int l = 0;
+        // Refactor code to use boolean isGalil? Remove some logic from loop?
         while (s <= n - m) {
             // once again recall that BM checks from right to left.
             j = m - 1;
@@ -255,7 +259,7 @@ public class BoyerMoore {
      * to j - i.
      *
      * These computations are reliant on a border array f. A border is a substring which is both a proper suffix and
-     * a proper prefix. See the ReadMe file and linked explanation videos for a more in depth description of this
+     * a proper prefix. See the ReadMe file for a more in depth description of this
      * process.
      *
      * @param shift    an integer array whose entries contain the distance the pattern needs to shift if a mismatch
