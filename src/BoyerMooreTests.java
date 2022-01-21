@@ -108,7 +108,7 @@ public class BoyerMooreTests {
     @Test (timeout = TIMEOUT)
     public void buildLastTableEmpty() {
         CharSequence sequence = "";
-        Map<Character, Integer> result = BoyerMoore.buildLastTable(sequence);
+        Map<Character, Integer> result = LastOccurrenceTable.buildLastTable(sequence);
         assertTrue(result.isEmpty());
     }
 
@@ -127,7 +127,7 @@ public class BoyerMooreTests {
         expLastOccTable.put('1', 5);
         expLastOccTable.put('2', 6);
         expLastOccTable.put('3', 7);
-        assertEquals(expLastOccTable, BoyerMoore.buildLastTable(sequence));
+        assertEquals(expLastOccTable, LastOccurrenceTable.buildLastTable(sequence));
     }
 
     /**
@@ -138,7 +138,7 @@ public class BoyerMooreTests {
     public void buildLastTableMonochar() {
         CharSequence sequence = "aaaaaaaa";
         expLastOccTable.put('a', 7);
-        Map<Character, Integer> res = BoyerMoore.buildLastTable(sequence);
+        Map<Character, Integer> res = LastOccurrenceTable.buildLastTable(sequence);
         assertEquals(expLastOccTable, res);
         assertNull(res.get('A'));
         assertNull(res.get('b'));
@@ -153,7 +153,7 @@ public class BoyerMooreTests {
         CharSequence sequence = "aaabbaabbabbabbabbba";
         expLastOccTable.put('a', 19);
         expLastOccTable.put('b', 18);
-        Map<Character, Integer> res = BoyerMoore.buildLastTable(sequence);
+        Map<Character, Integer> res = LastOccurrenceTable.buildLastTable(sequence);
         assertEquals(expLastOccTable, res);
         assertNull(res.get('A'));
         assertNull(res.get('B'));
@@ -173,7 +173,7 @@ public class BoyerMooreTests {
         expLastOccTable.put('c', 9);
         expLastOccTable.put('b', 8);
         expLastOccTable.put('a', 7);
-        Map<Character, Integer> res = BoyerMoore.buildLastTable(sequence);
+        Map<Character, Integer> res = LastOccurrenceTable.buildLastTable(sequence);
         assertEquals(expLastOccTable, res);
         assertNull(res.get('A'));
         assertNull(res.get('B'));
@@ -202,7 +202,7 @@ public class BoyerMooreTests {
             p += (char) i;
             expLastOccTable.put((char) i, i + 28);
         }
-        Map<Character, Integer> res = BoyerMoore.buildLastTable(p);
+        Map<Character, Integer> res = LastOccurrenceTable.buildLastTable(p);
         assertEquals(expLastOccTable, res);
     }
 
@@ -225,7 +225,7 @@ public class BoyerMooreTests {
             p += (char) i;
             expLastOccTable.put((char) i, i  - 8198);
         }
-        Map<Character, Integer> res = BoyerMoore.buildLastTable(p);
+        Map<Character, Integer> res = LastOccurrenceTable.buildLastTable(p);
         assertEquals(expLastOccTable, res);
     }
 
@@ -255,21 +255,21 @@ public class BoyerMooreTests {
     public void buildFailureTableEmptyPattern() {
         expFailureTable = new int[0];
 
-        assertArrayEquals(expFailureTable, BoyerMoore.buildFailureTable("", comparator));
+        assertArrayEquals(expFailureTable, FailureTable.buildFailureTable("", comparator));
         assertEquals(0, comparator.getComparisonCount());
     }
 
     @Test
     public void buildFailureTableSingleCharPattern() {
         expFailureTable = new int[] {0};
-        assertArrayEquals(expFailureTable, BoyerMoore.buildFailureTable("A", comparator));
+        assertArrayEquals(expFailureTable, FailureTable.buildFailureTable("A", comparator));
         assertEquals(0, comparator.getComparisonCount());
     }
 
     @Test
     public void buildFailureTableDistinctCharacters() {
         expFailureTable = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        assertArrayEquals(expFailureTable, BoyerMoore.buildFailureTable(
+        assertArrayEquals(expFailureTable, FailureTable.buildFailureTable(
                 "abcdefghiklmnpoq", comparator)
         );
         assertEquals(15, comparator.getComparisonCount());
@@ -278,7 +278,7 @@ public class BoyerMooreTests {
     @Test
     public void buildFailureTableRepetitiousNoPrefixes() {
         expFailureTable = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
-        assertArrayEquals(expFailureTable, BoyerMoore.buildFailureTable(
+        assertArrayEquals(expFailureTable, FailureTable.buildFailureTable(
                 "abccbddbccddccbbcc", comparator)
         );
         assertEquals(17, comparator.getComparisonCount());
@@ -287,7 +287,7 @@ public class BoyerMooreTests {
     @Test
     public void buildFailureTableNonNestedPrefixes() {
         expFailureTable = new int[] {0, 1, 0, 0, 1, 0, 0, 1, 2, 0, 0, 1, 2, 3, 4, 0, 1, 2, 3, 4, 5, 6, 0};
-        assertArrayEquals(expFailureTable, BoyerMoore.buildFailureTable(
+        assertArrayEquals(expFailureTable, FailureTable.buildFailureTable(
                 "aabcadcaadeaabcdaabcade", comparator)
         );
 
@@ -301,7 +301,7 @@ public class BoyerMooreTests {
     @Test
     public void buildFailureTableNestedPrefixes() {
         expFailureTable = new int[] {0, 1, 0, 0, 1, 2, 2, 2, 3, 4, 5, 6, 3, 4, 5, 6, 7, 8, 0};
-        assertArrayEquals(expFailureTable, BoyerMoore.buildFailureTable(
+        assertArrayEquals(expFailureTable, FailureTable.buildFailureTable(
                 "AACGAAAACGAACGAAAAG", comparator)
         );
         // 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18
@@ -317,7 +317,7 @@ public class BoyerMooreTests {
     @Test
     public void buildFailureTableMonochar() {
         expFailureTable = new int[] {0, 1, 2, 3, 4, 5};
-        assertArrayEquals(expFailureTable, BoyerMoore.buildFailureTable(
+        assertArrayEquals(expFailureTable, FailureTable.buildFailureTable(
                 "aaaaaa", comparator)
         );
         // 0 1 2 3 4 5
@@ -330,7 +330,7 @@ public class BoyerMooreTests {
     @Test
     public void buildFailureTableRepetitive() {
         expFailureTable = new int[] {0, 0, 0, 0, 0, 1, 2, 3, 4, 1, 2, 3, 1, 2, 3, 1, 0, 0, 1, 2, 3, 1, 2, 1, 2, 3, 4, 1, 2, 1, 2, 3, 1, 1, 2, 1, 1, 1, 2, 3};
-        assertArrayEquals(expFailureTable, BoyerMoore.buildFailureTable(
+        assertArrayEquals(expFailureTable, FailureTable.buildFailureTable(
                 "abbccabbcabbabbaccabbababbcababbaabaaabb", comparator)
         );
 
@@ -340,7 +340,7 @@ public class BoyerMooreTests {
     @Test
     public void buildFailureTableNonStandardCharacters() {
         expFailureTable = new int[] {0, 0, 0, 0, 0, 1, 2, 3, 4, 5, 0, 0, 0, 0};
-        assertArrayEquals(expFailureTable, BoyerMoore.buildFailureTable(
+        assertArrayEquals(expFailureTable, FailureTable.buildFailureTable(
                 "αμην αμην λεγω", comparator)
         );
         assertEquals(14, comparator.getComparisonCount());
@@ -363,14 +363,14 @@ public class BoyerMooreTests {
          */
         // Generic BM
 //        assertEquals(sellAnswer,
-//                BoyerMoore.boyerMoore(sellPattern, sellText, comparator));
+//                BoyerMooreComplete.boyerMoore(sellPattern, sellText, comparator));
 //        assertTrue("Did not use the comparator.",
 //                comparator.getComparisonCount() != 0);
 //        assertEquals("Comparison count was " + comparator.getComparisonCount()
 //                + ". Should be 20.", 20, comparator.getComparisonCount());
         // BM Galil
         assertEquals(sellAnswer,
-                BoyerMoore.boyerMooreGalil(sellPattern, sellText, comparator));
+                BoyerMooreComplete.boyerMooreGalil(sellPattern, sellText, comparator));
         assertTrue("Did not use the comparator.",
                 comparator.getComparisonCount() != 0);
         assertTrue("Comparison count was " + comparator.getComparisonCount()
@@ -390,7 +390,7 @@ public class BoyerMooreTests {
             expected total comparisons: 9
          */
         assertEquals(emptyList,
-                BoyerMoore.boyerMooreGalil(sellPattern,
+                BoyerMooreComplete.boyerMooreGalil(sellPattern,
                         sellNoMatch, comparator));
         assertTrue("Did not use the comparator.",
                 comparator.getComparisonCount() != 0);
@@ -413,7 +413,7 @@ public class BoyerMooreTests {
             expected total comparisons: 5
          */
         assertEquals(multipleAnswer,
-                BoyerMoore.boyerMooreGalil(multiplePattern,
+                BoyerMooreComplete.boyerMooreGalil(multiplePattern,
                         multipleText, comparator));
         assertTrue("Did not use the comparator.",
                 comparator.getComparisonCount() != 0);
@@ -437,7 +437,7 @@ public class BoyerMooreTests {
             expected total comparisons: 0
          */
         assertEquals(emptyList,
-                BoyerMoore.boyerMooreGalil(sellNoMatch,
+                BoyerMooreComplete.boyerMooreGalil(sellNoMatch,
                         sellPattern, comparator));
         assertEquals(0, comparator.getComparisonCount());
     }
@@ -455,7 +455,7 @@ public class BoyerMooreTests {
         //owr (1)
         //ibb (1)
         expMatches.add(0);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(9, comparator.getComparisonCount());
         assertTrue(comparator.getComparisonCount() <= 9);
     }
@@ -472,7 +472,7 @@ public class BoyerMooreTests {
         //etme (1)
         //meow (4)
         expMatches.add(13);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(12, comparator.getComparisonCount());
         assertTrue(comparator.getComparisonCount() <= 12);
     }
@@ -491,7 +491,7 @@ public class BoyerMooreTests {
         //meo (2)
 
         expMatches.add(7);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(13, comparator.getComparisonCount());
         assertTrue("Comparison count was " + comparator.getComparisonCount(), comparator.getComparisonCount() <= 13);
     }
@@ -501,9 +501,9 @@ public class BoyerMooreTests {
     public void infoForMiddleMatch() {
         int[] shift = new int[4];
         int[] border = new int[4];
-        BoyerMoore.preprocessStrongSuffix(shift, border, "boo", new CharacterComparator());
-        BoyerMoore.preprocessCase2(shift, border, "boo");
-        HashMap<Character, Integer> lot = (HashMap<Character, Integer>) BoyerMoore.buildLastTable("boo");
+        GoodSuffixPreprocessing.preprocessStrongSuffix(shift, border, "boo", new CharacterComparator());
+        GoodSuffixPreprocessing.preprocessCase2(shift, border, "boo");
+        HashMap<Character, Integer> lot = (HashMap<Character, Integer>) LastOccurrenceTable.buildLastTable("boo");
         for (Character c : lot.keySet()) {
             System.out.print(c + "-> " + lot.get(c) + "|");
         }
@@ -548,7 +548,7 @@ public class BoyerMooreTests {
         expMatches.add(21);
         expMatches.add(41);
         expMatches.add(51);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(39, comparator.getComparisonCount());
         assertTrue(comparator.getComparisonCount() <= 39);
     }
@@ -589,7 +589,7 @@ public class BoyerMooreTests {
         expMatches.add(22);
         expMatches.add(25);
         expMatches.add(29);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(53, comparator.getComparisonCount());
         assertTrue(comparator.getComparisonCount() <= 53);
     }
@@ -615,7 +615,7 @@ public class BoyerMooreTests {
         //cbcd (4)
         expMatches.add(8);
         expMatches.add(17);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(33, comparator.getComparisonCount());
         assertTrue(comparator.getComparisonCount() <= 33);
     }
@@ -627,7 +627,7 @@ public class BoyerMooreTests {
                 "the sky and the shadows rise slowly through the wood, out she comes ruffling and blinking from the " +
                 "old hollow tree. Now her weird 'hoo-hoo-hoo-oo-oo' echoes through the quiet wood, and she begins " +
                 "her hunt for the bugs and beetles, frogs and mice she likes so well to eat.";
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(108, comparator.getComparisonCount());
         assertTrue(comparator.getComparisonCount() <= 108);
     }
@@ -637,7 +637,7 @@ public class BoyerMooreTests {
         pattern = "woof";
         text = "woof";
         expMatches.add(0);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(4, comparator.getComparisonCount());
         assertTrue(comparator.getComparisonCount() <= 4);
     }
@@ -666,7 +666,7 @@ public class BoyerMooreTests {
         expMatches.add(8);
         expMatches.add(13);
         expMatches.add(15);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(34, comparator.getComparisonCount());
         assertTrue(comparator.getComparisonCount() <= 34);
     }
@@ -676,7 +676,7 @@ public class BoyerMooreTests {
         pattern = "ababababababcababababbababcbabcabcbabcb";
         text = "abab";
 
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
         assertEquals(0, comparator.getComparisonCount());
     }
 
@@ -685,7 +685,7 @@ public class BoyerMooreTests {
         pattern = "m";
         text = "";
 
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
         assertEquals(0, comparator.getComparisonCount());
     }
 
@@ -694,7 +694,7 @@ public class BoyerMooreTests {
         pattern = "cats";
         text = "scat";
 
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
         assertEquals(1, comparator.getComparisonCount());
     }
 
@@ -714,7 +714,7 @@ public class BoyerMooreTests {
         expMatches.add(56);
         expMatches.add(77);
         expMatches.add(91);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(92, comparator.getComparisonCount());
         assertTrue(comparator.getComparisonCount() <= 92);
     }
@@ -782,7 +782,7 @@ public class BoyerMooreTests {
                 "The birds asked the visiting crow, “Tell us how this has happened.”\n" +
                 "“I will tell you,” said the crow and began telling them the story of the hares and the elephants.";
         expMatches.add(3126);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(1606, comparator.getComparisonCount());
         assertTrue(comparator.getComparisonCount() <= 1606);
     }
@@ -792,7 +792,7 @@ public class BoyerMooreTests {
         pattern = "☮";
         text = "✨✩✪✫✬✭✮✯✰✱✲✳✴✵✶✷✸☮✹✺✻✼✽✾✿❀❁❂❃❄❅❆❇❈❉❊❋❌❍❎❏❐❑❒❓❔❕❖❗❘❙❚❛❜❝❞❟❠❡❢❣❤❥❦❧";
         expMatches.add(17);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(65, comparator.getComparisonCount());
         assertTrue(comparator.getComparisonCount() <= 65);
     }
@@ -823,7 +823,7 @@ public class BoyerMooreTests {
         CharSequence text = "abacbabadcabacab";
         CharSequence pattern = "abacab";
         expMatches.add(10);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(13, comparator.getComparisonCount());
         assertTrue("Comparison count was " + comparator.getComparisonCount(), comparator.getComparisonCount() <= 13);
     }
@@ -895,7 +895,7 @@ public class BoyerMooreTests {
                 "“I will tell you,” said the crow and began telling them the story of the hares and the elephants.";
 
         expMatches.add(3126);
-        assertEquals(expMatches, BoyerMoore.boyerMooreGalil(pattern, text, comparator));
+        assertEquals(expMatches, BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator));
 //        assertEquals(393, comparator.getComparisonCount());
         assertTrue(comparator.getComparisonCount() <= 393);
     }
@@ -904,7 +904,7 @@ public class BoyerMooreTests {
 //    @Test(timeout = TIMEOUT)
 //    public void weirdPeriodicityTest() {
 //        CharSequence pattern = "abcabcabcab";
-//        int[] ftable = BoyerMoore.buildFailureTable(pattern, comparator);
+//        int[] ftable = BoyerMooreComplete.buildFailureTable(pattern, comparator);
 //        for (int a : ftable) {
 //            System.out.print(a + ", ");
 //        }
@@ -920,10 +920,10 @@ public class BoyerMooreTests {
 //         */
 //        CharSequence text = "abababaaabababa";
 //        CharSequence pattern = "ababa";
-//        int k = pattern.length() - BoyerMoore.buildFailureTable(pattern, comparator)[pattern.length()-1];
+//        int k = pattern.length() - BoyerMooreComplete.buildFailureTable(pattern, comparator)[pattern.length()-1];
 //        // Testing periodicity
 //        assertEquals(2, k);
-//        ArrayList<Integer> matches = (ArrayList<Integer>) BoyerMoore.boyerMooreGalil(pattern, text, comparator);
+//        ArrayList<Integer> matches = (ArrayList<Integer>) BoyerMooreComplete.boyerMooreGalil(pattern, text, comparator);
 //        ArrayList<Integer> correct = new ArrayList<>();
 //        correct.add(0);
 //        correct.add(2);
@@ -936,7 +936,7 @@ public class BoyerMooreTests {
 //    public void GalilTestOne() {
 //        CharSequence text = "abababaaabababa";
 //        CharSequence pattern = "ababa";
-//        int k = pattern.length() - BoyerMoore.buildFailureTable(pattern, comparator)[pattern.length() -1];
+//        int k = pattern.length() - BoyerMooreComplete.buildFailureTable(pattern, comparator)[pattern.length() -1];
 //    }
 
 }
