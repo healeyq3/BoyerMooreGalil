@@ -68,11 +68,10 @@ public class BoyerMooreComplete {
         GoodSuffixPreprocessing.preprocessStrongSuffix(shift, f, pattern, comparator);
         GoodSuffixPreprocessing.preprocessCase2(shift, f, pattern);
 
-        // k is the "periodicity" of the pattern. A check will be implemented below to ensure that k is valid
-        // (Only for p = u^k case).
+        // k is the "periodicity" of the pattern.
         int k = m - FailureTable.buildFailureTable(pattern, comparator)[m - 1];
 
-        // s is the shift of the pattern
+        // s is the shift of the pattern with respect to the text
         int s = 0;
         // j will keep track of which element in the pattern we are currently checking
         int j;

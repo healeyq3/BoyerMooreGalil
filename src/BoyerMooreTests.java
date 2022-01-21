@@ -92,7 +92,7 @@ public class BoyerMooreTests {
             pattern: sell
             last table: {s : 0, e : 1, l : 3}
          */
-        Map<Character, Integer> lastTable = BoyerMoore
+        Map<Character, Integer> lastTable = LastOccurrenceTable
                 .buildLastTable(sellPattern);
         Map<Character, Integer> expectedLastTable = new HashMap<>();
         expectedLastTable.put('s', 0);
@@ -239,7 +239,7 @@ public class BoyerMooreTests {
             failure table: [0, 0, 1, 2, 3]
             comparisons: 4
          */
-        int[] failureTable = BoyerMoore
+        int[] failureTable = FailureTable
                 .buildFailureTable(kmpPattern, comparator);
         int[] expected = {0, 0, 1, 2, 3};
         assertArrayEquals(expected, failureTable);
