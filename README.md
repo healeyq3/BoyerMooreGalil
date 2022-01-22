@@ -1,4 +1,5 @@
 Notation:
+
 p: represents the pattern string of length m. I will index the pattern with the notation "p[i]" for a single element or "p[i, j]" for the inclusive range of elements from index i to index j. Note that 0 <= i < j < m.
 
 k: the "period" of a string; |k| >= 1
@@ -22,8 +23,11 @@ Also in the src folder are two alternate implementations of the BM algorithm. Th
 Now, what is Zvi Galil's optimization technique? In his paper, Galil discusses how the time-complexity of the Boyer Moore algorithm is worst case nonlinear when a pattern matches with a substring of the text and the pattern itself is periodic. Or defined properly, when a pattern is the prefix of a repeating string. In order to reduce the time complexity to worst case linear, Galil suggests that when there is a match between t[x, y] and p[i, j], given that p is periodic with period |k|, the search algorithm shifts the pattern forward by |k| indices and then checks only the last |k| (recall that the BM algorithm checks characters from right to left).
 
 Moving onto the implementation itself, there are two main facets of Galil's modification. The first is determining whether or not a pattern is periodic. The second is adjusting the shift framework so that when a pattern p matches with text t we exploit p's periodicity to reduce the number of comparisons between p and t. We will determine p's period, k, with the failure table. As stated above, the failure table is an array whose entry f[i] is the length of the maximum matching proper prefix which is also a suffix of the sub-pattern p[0, i]. As an example take the pattern:
+
 p[0, m - 1] = [a, b, c, d, e, f, a, b, c]. Its failure table would be
+
 f[0, m - 1] = [0, 0, 0, 0, 0, 0, 1, 2, 3]. 
+
 To understand this result observe that p[0, 2] = p[m - 3, m - 1]. This is a range of three elements. Therefore f[m - 1] = 3.
 Now, recall that Galil's shifting scheme works when our pattern is a prefix of a repeating string (periodic). Let us define two sub-cases:
 1. k, the period, or rather the shortest prefix of the repeating string, is completed (and repeated) within the pattern. For example: p = [a, b, a, b, a]; k = [a, b] => |k| = 2.
