@@ -1,8 +1,12 @@
 Notation:
 p: represents the pattern string of length m. I will index the pattern with the notation "p[i]" for a single element or "p[i, j]" for the inclusive range of elements from index i to index j. Note that 0 <= i < j < m.
+
 k: the "period" of a string; |k| >= 1
+
 t: represents the text string of length n. I will index the text with the notation "t[x]" for a single element or "t[x, y]" for the inclusive range of elements from index x to index y. Note that 0 <= x < y < n.
+
 f: the array returned by the "FailureTableClass" as detailed in the Knuth-Morris-Pratt algorithm (briefly explained below).
+
 **Please note that the indices i, j and x, z in this README have no relation to any indices i, j or x, y in the code**
 
 The BoyerMooreGalil Repository contains two primary folders. The first is titled "Research," where I have uploaded the respective research papers, as well as my notes on the algorithm(s). The second folder is simply "src," where the code is housed. This README file will focus on the latter.
