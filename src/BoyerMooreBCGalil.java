@@ -50,10 +50,10 @@ public class BoyerMooreBCGalil {
         Map<Character, Integer> lot = LastOccurrenceTable.buildLastTable(pattern);
 
         /*
-        s is the shift of the pattern with respect to the text. Or rather, it is the element in the text that we
+        i is the shift of the pattern with respect to the text. Or rather, it is the element in the text that we
         are comparing pattern.charAt(0) with.
          */
-        int s = 0;
+        int i = 0;
 
         /*
         Instead of checking each character of the pattern (0 <- m), we will instead check (l <- m). While we do
@@ -70,19 +70,19 @@ public class BoyerMooreBCGalil {
          */
         boolean useGalilRule = period >= 1;
 
-        while (s <= n - m) {
+        while (i <= n - m) {
             // once again recall that BM checks from right to left
             // j will keep track of which element in the pattern we are currently checking
             int j = m - 1;
 
             // so long as the characters of the pattern and text are matching keep moving left in the pattern
-            while (j >= l && comparator.compare(pattern.charAt(j), text.charAt(s + j)) == 0) {
+            while (j >= l && comparator.compare(pattern.charAt(j), text.charAt(i + j)) == 0) {
                 j--;
             }
 
             // If j < l then we have found a match
             if (j < l) {
-                matches.add(s);
+                matches.add(i);
                 /*
                 If we have determined that our pattern is periodic (or potentially periodic) then we can exploit its
                 periodicity by shifting k elements forward and then only checking the last k to determine if there is
@@ -90,9 +90,9 @@ public class BoyerMooreBCGalil {
                  */
                 if (useGalilRule) {
                     l = m - period; // Recall we check the elements in the pattern from p[m - 1] -> p[l]
-                    s += period;
+                    i += period;
                 } else {
-                    s++;
+                    i++;
                 }
             } else {
                 /*
@@ -102,11 +102,11 @@ public class BoyerMooreBCGalil {
                 l = 0;
 
                 // Typical mismatch shifting scheme as detailed by the bad character heuristic.
-                int shift = lot.getOrDefault(text.charAt(s + j), -1);
+                int shift = lot.getOrDefault(text.charAt(i + j), -1);
                 if (shift < j) {
-                    s = s + j - shift;
+                    i = i + j - shift;
                 } else {
-                    s++;
+                    i++;
                 }
             }
         }
