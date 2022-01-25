@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class BoyerMooreBCGalil {
 
-    public static List<Integer> searchAlgorithm(CharSequence pattern, CharSequence text,
+    public static List<Integer> boyerMooreBCGalil(CharSequence pattern, CharSequence text,
                                                 CharacterComparator comparator) {
         if (pattern == null) {
             throw new IllegalArgumentException("Your pattern cannot be a null value. Please pass in a valid pattern"
