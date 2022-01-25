@@ -62,13 +62,13 @@ public class BoyerMooreBCGalil {
         int l = 0;
 
         // k is the "periodicity" of the pattern
-        int period = m - FailureTable.buildFailureTable(pattern, comparator)[m - 1];
+        int k = m - FailureTable.buildFailureTable(pattern, comparator)[m - 1];
 
         /*
         We will use this "galil" flag to indicate whether we can use Zvi Galil's optimization technique upon
         finding a match. Recall that we can use the galil rule if the period of the pattern is at least 1.
          */
-        boolean useGalilRule = period >= 1;
+        boolean galil = k >= 1;
 
         while (i <= n - m) {
             // once again recall that BM checks from right to left
@@ -88,9 +88,9 @@ public class BoyerMooreBCGalil {
                 periodicity by shifting k elements forward and then only checking the last k to determine if there is
                 another occurrence. This shifting scheme is the one detailed in Galil's white paper.
                  */
-                if (useGalilRule) {
-                    l = m - period; // Recall we check the elements in the pattern from p[m - 1] -> p[l]
-                    i += period;
+                if (galil) {
+                    l = m - k; // Recall we check the elements in the pattern from p[m - 1] -> p[l]
+                    i += k;
                 } else {
                     i++;
                 }
