@@ -370,7 +370,7 @@ public class BoyerMooreTests {
 //                + ". Should be 20.", 20, comparator.getComparisonCount());
         // BM Galil
         assertEquals(sellAnswer,
-                BoyerMooreComplete.boyerMooreGalil(sellPattern, sellText, comparator));
+                BoyerMooreBCGalil.boyerMooreBCGalil(sellPattern, sellText, comparator));
         assertTrue("Did not use the comparator.",
                 comparator.getComparisonCount() != 0);
         assertTrue("Comparison count was " + comparator.getComparisonCount()
@@ -938,5 +938,93 @@ public class BoyerMooreTests {
 //        CharSequence pattern = "ababa";
 //        int k = pattern.length() - BoyerMooreComplete.buildFailureTable(pattern, comparator)[pattern.length() -1];
 //    }
+
+    @Test(timeout = TIMEOUT)
+    public void moduleTest() {
+        CharSequence pattern = "ababa";
+        CharSequence text = "abababaaabababa";
+
+        // LOT Test
+        Map<Character, Integer> lastTable = LastOccurrenceTable
+                .buildLastTable(pattern);
+        Map<Character, Integer> expectedLastTable = new HashMap<>();
+        expectedLastTable.put('a', 4);
+        expectedLastTable.put('b', 3);
+        assertEquals(expectedLastTable, lastTable);
+
+        // Ftable Test
+        int[] failureTable = FailureTable
+                .buildFailureTable(pattern, comparator);
+        int priorComparisons = comparator.getComparisonCount();
+        System.out.println("Comparisons post ftable build: " + priorComparisons);
+        int[] expected = {0, 0, 1, 2, 3};
+        assertArrayEquals(expected, failureTable);
+
+        // Periodicity Test
+        int expectedK = 2;
+        int actualK = pattern.length() - failureTable[pattern.length() - 1];
+        assertEquals(expectedK, actualK);
+
+        // BM Galil Test
+        List<Integer> expectedMatches = new ArrayList<>();
+        expectedMatches.add(0);
+        expectedMatches.add(2);
+        expectedMatches.add(8);
+        expectedMatches.add(10);
+        List<Integer> actualMatches = BoyerMooreBCGalil.boyerMooreBCGalil(pattern, text, comparator);
+        assertEquals(expectedMatches, actualMatches);
+        /*
+        2 * because ftable constructed within the boyerMooreBCGalil method
+        BM algorithm w/o Galil Rule uses 32 comparisons
+         */
+        int numComparisons = comparator.getComparisonCount() - 2 * priorComparisons;
+        System.out.println("Actual num comparisons: " + numComparisons);
+        assertEquals(22, numComparisons);
+    }
+
+    // Couldn't think of a good name for this one
+    @Test
+    public void bigJump() {
+        CharSequence pattern = "abcabce";
+        CharSequence text = "abcabcabceabcabce";
+
+        // LOT Test
+        Map<Character, Integer> lastTable = LastOccurrenceTable
+                .buildLastTable(pattern);
+        Map<Character, Integer> expectedLastTable = new HashMap<>();
+        expectedLastTable.put('a', 3);
+        expectedLastTable.put('b', 4);
+        expectedLastTable.put('c', 5);
+        expectedLastTable.put('e', 6);
+        assertEquals(expectedLastTable, lastTable);
+
+        // Ftable Test
+        int[] failureTable = FailureTable
+                .buildFailureTable(pattern, comparator);
+        int priorComparisons = comparator.getComparisonCount();
+        System.out.println("Comparisons post ftable build: " + priorComparisons);
+        int[] expected = {0, 0, 0, 1, 2, 3, 0};
+        assertArrayEquals(expected, failureTable);
+
+        // Periodicity Test
+        int expectedK = 7;
+        int actualK = pattern.length() - failureTable[pattern.length() - 1];
+        assertEquals(expectedK, actualK);
+
+        // BM Galil Test
+        List<Integer> expectedMatches = new ArrayList<>();
+        expectedMatches.add(3);
+        expectedMatches.add(10);
+        List<Integer> actualMatches = BoyerMooreBCGalil.boyerMooreBCGalil(pattern, text, comparator);
+        assertEquals(expectedMatches, actualMatches);
+        /*
+        2 * because ftable constructed within the boyerMooreBCGalil method
+        BM algorithm w/o Galil Rule uses 49 comparisons <- Note that the search therefore has 34 fewer comparisons,
+        and including the preprocessing 27 fewer comparisons
+         */
+        int numComparisons = comparator.getComparisonCount() - 2 * priorComparisons;
+        System.out.println("Actual num comparisons: " + numComparisons);
+        assertEquals(15, numComparisons);
+    }
 
 }
