@@ -62,7 +62,7 @@ public class BoyerMooreBCGalil {
         int l = 0;
 
         // k is the "periodicity" of the pattern
-        int k = m - FailureTable.buildFailureTable(pattern, comparator)[m - 1];
+        int k = m - FailureTable.buildFailureTable(pattern, new CharacterComparator())[m - 1];
 
         while (i <= n - m) {
             // once again recall that BM checks from right to left
